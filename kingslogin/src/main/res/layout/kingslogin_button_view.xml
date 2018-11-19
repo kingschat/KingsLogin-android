@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/kings_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/round_blue_button"
+        android:drawableStart="@drawable/ic_kingschat"
+        android:gravity="center"
+        android:minHeight="60dp"
+        android:minWidth="240dp"
+        android:orientation="vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="@string/login_via_kingschat"
+        android:textAllCaps="true"
+        android:textColor="#fff"
+        android:textSize="14sp" />
+
+</merge>

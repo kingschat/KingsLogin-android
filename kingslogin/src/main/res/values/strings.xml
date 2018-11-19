@@ -1,0 +1,5 @@
+<resources>
+    <string name="login_via_kingschat">Login via KingsChat</string>
+    <string name="app_meta_data">com.kingschat.sdk.ApplicationId</string>
+    <string name="kc_package_name">com.joinkingschat.android</string>
+</resources>

@@ -1,0 +1,29 @@
+
+buildscript {
+
+    project.apply from: "${rootDir}/constants.gradle"
+
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$gradleVersion"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    project.apply from: "${rootDir}/constants.gradle"
+
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
