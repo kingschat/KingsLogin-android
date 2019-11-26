@@ -32,7 +32,6 @@ class LoginActivity : AppCompatActivity() {
                                 client_id = resources.getString(R.string.client_id),
                                 code = token
                         )
-
                         Services.kingschat.createToken(accessTokenRequest).enqueue(object : Callback<AccessTokenResponse> {
                             override fun onResponse(call: Call<AccessTokenResponse>, response: Response<AccessTokenResponse>) {
                                 Snackbar.make(login_activity_content, "Fetched access token", Snackbar.LENGTH_SHORT).show()
