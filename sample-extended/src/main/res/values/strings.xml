@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">KingsLoginExample</string>
+    <string name="client_id">Your client ID</string>
+</resources>
