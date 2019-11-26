@@ -9,6 +9,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.protobuf.ProtoConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Headers
@@ -22,7 +23,7 @@ interface KingschatService {
 interface KingscloudService {
     @Headers("Accept: application/x-protobuf", "Content-Type: application/x-protobuf")
     @POST("folders")
-    fun createDirectory(@Header("Authorization") authToken: String?, @Body request: CreateFolderRequest): Call<CreateFolderResponse>
+    fun createDirectory(@Header("Authorization") authToken: String, @Body request: CreateFolderRequest): Call<CreateFolderResponse>
 }
 
 object Services {
@@ -43,22 +44,23 @@ object Services {
         return retrofit.create(KingschatService::class.java)
     }
 
-    private fun createGson(): Gson = GsonBuilder()
-            .setLenient()
-            .create()
-
-    private fun createClient(): OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .build()
-
     private fun createKingscloudService(): KingscloudService {
         val client = createClient()
 
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://kingscloud.co/api/")
                 .client(client)
+                .addConverterFactory(ProtoConverterFactory.create())
                 .build()
 
         return retrofit.create(KingscloudService::class.java)
     }
+
+    private fun createClient(): OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
+
+    private fun createGson(): Gson = GsonBuilder()
+            .setLenient()
+            .create()
 }

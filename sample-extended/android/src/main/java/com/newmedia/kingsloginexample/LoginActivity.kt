@@ -43,7 +43,6 @@ class LoginActivity : AppCompatActivity() {
                             override fun onResponse(call: Call<AccessTokenResponse>, response: Response<AccessTokenResponse>) {
                                 response.body()?.let {
                                     tokenDatabase.putAccessToken(it.access_token)
-                                    tokenDatabase.putRefreshToken(it.refresh_token)
 
                                     startActivity(MainActivity.newIntent(applicationContext))
 
