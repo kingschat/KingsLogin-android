@@ -16,9 +16,9 @@ class TokenDatabase(context: Context) {
 
     fun getRefreshToken(): String = sharedPreferences.getString(REFRESH_TOKEN, "").orEmpty()
 
-    fun setAccessToken(token: String) = sharedPreferences.edit().putString(ACCESS_TOKEN, token).apply()
+    fun getAuthorizationToken(): String = "Bearer ${getAccessToken()}"
 
-    fun setRefreshToken(token: String) = sharedPreferences.edit().putString(REFRESH_TOKEN, token).apply()
+    fun putAccessToken(token: String) = sharedPreferences.edit().putString(ACCESS_TOKEN, token).apply()
 
-    fun clear() = sharedPreferences.edit().clear().apply()
+    fun putRefreshToken(token: String) = sharedPreferences.edit().putString(REFRESH_TOKEN, token).apply()
 }

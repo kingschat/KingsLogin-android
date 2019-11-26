@@ -20,21 +20,35 @@ class LoginActivity : AppCompatActivity() {
         CallbackManager.Factory.create()
     }
 
+    private val tokenDatabase: TokenDatabase by lazy {
+        TokenDatabase(applicationContext)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.login_activity)
 
         KingsLoginManager.getInstance().registerCallback(callbackManager,
                 object : KingsLoginCallback {
                     override fun onSuccess(token: String, scopes: KcScopes) {
+
                         val accessTokenRequest = AccessTokenRequest(
                                 grant_type = "code",
                                 client_id = resources.getString(R.string.client_id),
                                 code = token
                         )
+
                         Services.kingschat.createToken(accessTokenRequest).enqueue(object : Callback<AccessTokenResponse> {
                             override fun onResponse(call: Call<AccessTokenResponse>, response: Response<AccessTokenResponse>) {
-                                Snackbar.make(login_activity_content, "Fetched access token", Snackbar.LENGTH_SHORT).show()
+                                response.body()?.let {
+                                    tokenDatabase.putAccessToken(it.access_token)
+                                    tokenDatabase.putRefreshToken(it.refresh_token)
+
+                                    startActivity(MainActivity.newIntent(applicationContext))
+
+                                    finish()
+                                }
                             }
 
                             override fun onFailure(call: Call<AccessTokenResponse>, t: Throwable) {
