@@ -3,7 +3,7 @@
 
 This library allows your android app to login using Kingschat.
 
-Written in Kotlin 1.3.0
+Written in Kotlin 1.3.41
 
 Supported Android API version 19 and higher
 

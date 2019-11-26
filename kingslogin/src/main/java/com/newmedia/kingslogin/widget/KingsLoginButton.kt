@@ -1,10 +1,10 @@
 package com.newmedia.kingslogin.widget
 
 import android.content.Context
-import android.support.v4.app.Fragment
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import com.newmedia.kingslogin.R
 import com.newmedia.kingslogin.helper.KingsLogin.requestPermissions
 import kotlinx.android.synthetic.main.kingslogin_button_view.view.*
