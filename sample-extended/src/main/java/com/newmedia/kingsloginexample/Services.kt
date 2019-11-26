@@ -2,6 +2,8 @@ package com.newmedia.kingsloginexample
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,10 +19,13 @@ object Services {
     val kingschat: KingschatService = createKingschatService()
 
     private fun createKingschatService(): KingschatService {
+        val client = createClient()
+
         val gson = createGson()
 
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://connect.kingsch.at/api/developer/")
+                .baseUrl("https://connect.kingsch.at/developer/api/")
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
 
@@ -30,4 +35,8 @@ object Services {
     private fun createGson(): Gson = GsonBuilder()
             .setLenient()
             .create()
+
+    private fun createClient(): OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
 }
