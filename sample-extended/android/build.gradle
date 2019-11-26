@@ -13,7 +13,6 @@ android {
         targetSdkVersion project.ext.targetSdkVersion
         versionCode project.ext.versionCode
         versionName project.ext.versionName
-        signingConfig signingConfigs.release
     }
 
     buildTypes {
