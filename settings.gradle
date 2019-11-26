@@ -1,1 +1,1 @@
-include ':sample', ':sample-extended', ':kingslogin'
+include ':sample', ':sample-extended:android', ':kingslogin'
