@@ -1,0 +1,322 @@
+syntax = "proto3";
+package Kingscloud;
+
+option java_package = "com.newmedia.kingslogin.model";
+option java_multiple_files = true;
+option optimize_for = LITE_RUNTIME;
+option java_generate_equals_and_hash = true;
+
+enum Type {
+    file = 0;
+    audio = 1;
+    video = 2;
+    photo = 3;
+    archive = 4;
+    folder = 5;
+    note = 6;
+    voice = 7;
+}
+
+enum Status {
+    processing = 0;
+    uploaded = 1;
+    removed = 2;
+}
+/**
+ * GET /api/files/:id
+ * Get user file
+ *
+ * GET /api/folders/:id
+ * Get user folder
+ * Response: Item
+ *
+ */
+message Item {
+    /**
+     * Body of item
+     */
+    string id = 1;
+    string name = 2;
+    uint64 size = 3;
+    uint64 created_at_millis = 4;
+    uint64 updated_at_millis = 5;
+    string parent_item_id = 6;
+    string thumbnail_url = 7;
+    Type type = 8;
+    Status status = 9;
+}
+
+/**
+ *
+ * GET /api/search?search_phrase={search_phrase}&next_token={next_token}
+ * Get search results from search_phrase paginated with next_token
+ *
+ * GET /api/items/recent?next_token={next_token}
+ * Get user recent items with pagination starting from next_token
+ *
+ * GET /api/items/user?next_token={next_token}
+ * Get user items with pagination starting from next_token
+ *
+ * GET /api/items/user?timestamp={timestamp}&next_token={next_token}
+ * Get paginated user items updates
+ *
+ * GET /api/items/media?timestamp={timestamp}&next_token={next_token}&type={type}
+ * Get paginated user media items, query params are optional
+ *
+ * GET /api/folders/:folder_id/items?next_token={next_token}
+ * Get user folder items with pagination starting from next_token
+ *
+ * GET /api/folders/:folder_id/items?timestamp={timestamp}&next_token={next_token}
+ * Get paginated updates of files in user folder
+ *
+ * Response: ItemsResponse
+ *
+ */
+
+message ItemsResponse {
+    /**
+     * ItemsResponse
+     */
+    repeated Item items = 1;
+    string next_token = 2;
+}
+message ItemsError {
+    enum Code {
+        UNKNOWN = 0;
+    }
+    Code code = 1;
+    string user_message = 2;
+}
+/**
+ * POST /api/files
+ * Generate presigned url for file upload and creates file in the database
+ *
+ * Request: FilePresignedUrlRequest
+ * Response: FilePresignedUrlResponse
+ *
+ */
+message FilePresignedUrlRequest {
+    string name = 1;
+    string parent_item_id = 2;
+    string mime_type = 3;
+    Type type = 4;
+    uint64 size = 5;
+}
+message FilePresignedUrlResponse {
+    string presigned_url = 1;
+    Item item = 2;
+}
+message FilePresignedUrlError {
+    enum Code {
+        UNKNOWN = 0;
+        STORAGE_LIMIT = 1;
+    }
+    Code code = 1;
+    string user_message = 2;
+}
+
+/**
+ * POST /api/folders
+ * Create new folder
+ *
+ * Request: CreateFolderRequest
+ * Response: CreateFolderResponse
+ *
+ */
+message CreateFolderRequest {
+    string name = 1;
+    string parent_item_id = 2;
+}
+message CreateFolderResponse {
+    Item item = 2;
+}
+message CreateFolderError {
+    enum Code {
+        UNKNOWN = 0;
+    }
+    Code code = 1;
+    string user_message = 2;
+}
+
+/**
+ * POST /api/files/:id/share
+ * Create new short link for share option
+ *
+ * Response: ShareLinkResponse
+ *
+ */
+message ShareLinkResponse{
+    string short_link = 1;
+}
+message ShareLinkError{
+    enum Code {
+        UNKNOWN = 0;
+    }
+    Code code = 1;
+    string user_message = 2;
+}
+
+/**
+ * GET /api/shared_file/:short_link
+ * Returns shared file from short link
+ *
+ * Response: SharedFileResponse
+ *
+ */
+
+message SharedFileResponse {
+    string presigned_url = 1;
+    Item item = 2;
+}
+message SharedFileError {
+    enum Code {
+        UNKNOWN = 0;
+    }
+    Code code = 1;
+    string user_message = 2;
+}
+
+
+/**
+ * GET /api/files/:id/download
+ * Generate presigned url for file download
+ *
+ * Response: DownloadPresignedUrlResponse
+ *
+ */
+message DownloadPresignedUrlResponse {
+    string presigned_url = 1;
+}
+message DownloadPresignedUrlError {
+    enum Code {
+        UNKNOWN = 0;
+    }
+    Code code = 1;
+    string user_message = 2;
+}
+
+/**
+ * PUT /api/files/:id
+ * Updates file and save changes to database
+ *
+ * Request: UpdateFileRequest
+ * Response: UpdateFileResponse
+ */
+
+message UpdateFileRequest {
+    string name = 1;
+    uint64 size = 2;
+}
+
+message UpdateFileResponse {
+    Item item = 1;
+}
+
+/**
+* PUT /api/folders/:id
+* Updates folder and save changes to database
+*
+* Request: UpdateFolderRequest
+* Response: UpdateFolderResponse
+*/
+
+message UpdateFolderRequest {
+    string name = 1;
+}
+
+message UpdateFolderResponse {
+    Item item = 1;
+}
+
+/**
+* GET /api/storage_space
+* Get returns available(in total) and used storage in bytes for current user
+*
+* Response: StorageResponse
+*
+*/
+
+message StorageResponse {
+    uint64 available_storage = 1;
+    uint64 used_storage = 2;
+}
+
+message StorageError {
+    enum Code {
+        UNKNOWN = 0;
+    }
+    Code code = 1;
+    string user_message = 2;
+}
+
+/**
+ * POST /api/items/<item-id>/share
+ * Share item with other users
+ *
+ * Response: ShareItemResponse
+ *
+ */
+message ShareItemRequest {
+    /**
+     * List of ids of users item is shared to
+     */
+    repeated string recipients_ids = 1;
+
+    /**
+     * Message to users item is shared to
+     */
+    string message = 2;
+
+    /**
+     * Access rights. Can be one of:
+     *  - view - when user can only view given item
+     *  - edit - when user can view and edit item
+     * When edit is given, also view should be given
+     */
+    repeated string actions = 3;
+}
+
+message ShareItemResponse {
+}
+
+message ShareItemError {
+    enum Code {
+        UNKNOWN = 0;
+        /**
+         * When user is unauthorized to share item
+         */
+        UNAUTHORIZED = 1;
+        /**
+         * When item is already shared to user
+         */
+        ALREADY_SHARED = 2;
+        /**
+         * When user tries to share item to self
+         */
+        SHARING_TO_SELF = 3;
+    }
+    Code code = 1;
+    string message = 2;
+}
+
+/**
+ *
+ * POST /api/items/remove
+ * Remove multiple items by thier ids
+ *
+ */
+message RemoveItemsRequest {
+    /**
+     * List of ids of items to remove
+     */
+    repeated string item_ids = 1;
+}
+
+message RemoveItemsError {
+    enum Code {
+        UNKNOWN = 0;
+        NOT_FOUND = 1;
+    }
+    Code code = 1;
+    string message = 2;
+}
